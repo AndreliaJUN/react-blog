@@ -2,10 +2,10 @@ import Head from 'next/head'
 import React from 'react'
 import {Row, Col} from 'antd'
 import Header from '../components/Header'
-const Home=()=>(
+const Detailed=()=>(
 	<>
 	  <Head>
-	  	<title>Home</title>
+	  	<title>Detailed</title>
 	  </Head>
 	  <Header/>
 	  <Row className="comm-main" type="flex" justify="center">
@@ -19,4 +19,4 @@ const Home=()=>(
     </Row>
 	</>
 )
-export default Home
+export default Detailed

@@ -1,0 +1,36 @@
+.header{
+    background-color: #fff;
+    padding: .4rem;
+    overflow: hidden;
+	height: 3.2rem;
+	/* line-height: 3.2rem; */
+    border-bottom:1px solid #ccc;
+}
+/* rem的适配这个回头看看 */
+.header-logo{
+    color:#87CEEB;
+    font-size: 1.6rem;
+    text-align: left;
+
+}
+.header-txt{
+    font-size: 0.6rem;
+    color: #999;
+	display: inline-block;
+    padding-left: 0.7rem;
+}
+
+/* 这个应该是在antd原有的类上改的 */
+.ant-meu{
+    line-height: 2.8rem;
+
+}
+.ant-menu-item{
+    font-size:.8rem !important;
+    padding-left:1rem;
+    padding-right:1rem;
+}
+/* 回过头改一下 */
+/* .ant-menu-item:hover{
+  color: #87CEFA;
+} */
