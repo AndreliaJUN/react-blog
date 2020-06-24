@@ -526,3 +526,305 @@ export default Footer
 
 #### 二、博客列表页的制作
 
+因为博客列表页和首页非常类似，只是列表页多了“面包屑导航”,我们先把首页的代码index.js，拷贝到list.js页面中，把样式改为list.css
+
+然后就可以写面包屑导航了，直接用Ant Design自带的Breadcrumb就可以，用法也是非常简单，先进行引入,再添加
+
+list.js
+```js
+import Head from 'next/head'
+// useState的作用？
+import React, { useState } from 'react'
+import { Row, Col, List, Icon, Breadcrumb } from 'antd'
+import Header from '../components/Header'
+import Author from '../components/Author'
+import Footer from '../components/Footer'
+import '../static/style/pages/list.css'
+
+const List = () => {
+	// 这里复习一下react基础传值
+	const [ mylist, setMylist ] = useState(
+		[
+			{ title: '50元加入小密圈 胖哥带你学一年', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+			{ title: 'React实战视频教程-技术胖Blog开发(更新04集)', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+			{ title: 'React服务端渲染框架Next.js入门(共12集)', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+			{ title: 'React Hooks 免费视频教程(共11集)', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+		]
+	)
+	return ( <>
+		<Head>
+			<title>List</title>
+		</Head>
+		<Header />
+		<Row className="comm-main" type="flex" justify="center">
+			<Col className="comm-left" xs={ 24 } sm={ 24 } md={ 16 } lg={ 18 } xl={ 14 }  >
+				<div>
+
+					<div className="bread-div">
+						<Breadcrumb>
+							<Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
+							<Breadcrumb.Item>视频列表</Breadcrumb.Item>
+						</Breadcrumb>
+					</div>
+
+					<List
+						header={ <div>最新日志</div> }
+						itemLayout="vertical"
+						dataSource={ mylist }
+						renderItem={ item => (
+							<List.Item>
+								<div className="list-title">{ item.title }</div>
+								<div className="list-icon">
+									<span><Icon type="calendar" /> 2019-06-28</span>
+									<span><Icon type="folder" /> 视频教程</span>
+									<span><Icon type="fire" /> 5498人</span>
+								</div>
+								<div className="list-context">{ item.context }</div>
+							</List.Item>
+						) }
+					/>
+				</div>
+			</Col>
+
+			<Col className="comm-box" xs={ 0 } sm={ 0 } md={ 7 } lg={ 5 } xl={ 4 }>
+				<Author />
+			</Col>
+		</Row>
+		<Footer />
+	</> )
+}
+export default List
+```
+list.css
+```css
+body{
+  background-color: #f6f6f6;  
+}
+.comm-left{
+  background-color: #FFF;
+  padding:.3rem;
+  border-radius: .3rem;
+  border:1px solid #eee;
+}
+.comm-box{
+  background-color: #FFF;
+  margin-left: .5rem;
+  padding:.3rem;
+  border-radius: .3rem;
+  border:1px solid #eee;
+}
+.comm-main{
+  margin-top: .5rem;
+}
+.list-title{
+  font-size:1.3rem;
+  color: #1e90ff;
+  padding: 0 0.5rem;
+}
+.list-context{
+  color:#777;
+  padding:.5rem;
+}
+.list-icon{
+  padding:.5rem 0;
+  color:#AAA;
+}
+.list-icon span{
+  display: inline-block;
+  padding: 0 10px;
+}
+```
+
+### p07:博客详情页面制作1——编写基本页面结构
+
+详细页做主要的一点是对Markdown语法的解析。
+
+#### 一、编写基本页面结构
+
+在编写页面前，在/static/style/pages文件夹下建立一个detailed.css文件，代码如下：
+
+```css
+.bread-div{
+    padding: .5rem;
+    border-bottom:1px solid #eee;
+    background-color: #e1f0ff;
+}
+.detailed-title{
+    font-size: 1.8rem;
+    text-align: center;
+    padding: 1rem;
+}
+.center{
+    text-align: center;
+}
+.detailed-content{
+    padding: 1.3rem;
+    font-size: 1rem;
+}
+code {
+    display: block ;
+     background-color:#f3f3f3;
+     padding: .5rem !important;
+     overflow-y: auto;
+     font-weight: 300;
+     font-family: Menlo, monospace;
+     border-radius: .3rem;
+}
+
+.title-anchor{
+    color:#888 !important;
+    padding:4px !important;
+    margin: 0rem !important;
+    height: auto !important;
+    line-height: 1.2rem !important;
+    font-size: .9rem !important;
+    border-bottom: 1px dashed #eee;
+}
+.active{
+    color:rgb(30, 144, 255) !important;
+}
+.nav-title{
+    text-align: center;
+    color: #888;
+    border-bottom: 1px solid rgb(30, 144, 255);
+
+}
+```
+
+有了样式文件后,打开以前我们准备好的detailed.js，然后检查一下页面的引入:
+
+detailed.js
+
+```js
+import Head from 'next/head'
+// useState的作用？
+import React, { useState } from 'react'
+import { Row, Col,List,Icon ,Breadcrumb} from 'antd'
+import Header from '../components/Header'
+import Author from '../components/Author'
+import Footer from '../components/Footer'
+import '../static/style/pages/detailed.css'
+
+const Detail = () => {
+	// 这里复习一下react基础传值
+	const [ mylist, setMylist ] = useState(
+		[
+			{ title: '50元加入小密圈 胖哥带你学一年', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+			{ title: 'React实战视频教程-技术胖Blog开发(更新04集)', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+			{ title: 'React服务端渲染框架Next.js入门(共12集)', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+			{ title: 'React Hooks 免费视频教程(共11集)', context: '50元跟着胖哥学一年，掌握程序人的学习方法。 也许你刚步入IT行业，也许你遇到了成长瓶颈，也许你不知道该学习什么知识，也许你不会融入团队，也许...........有些时候你陷入彷徨。 你需要一个强力的队友，你需要一个资深老手，你需要一个随时可以帮助你的人，你更需要一个陪你加速前行的。 我在这个行业走了12年，从后端、前端到移动端都从事过，从中走了很多坑，但我有一套适合程序员的学习方法。 如果你愿意，我将带着你在这个程序行业加速奔跑。分享我学习的方法，所学的内容和一切我的资料。 你遇到的职业问题，我也会第一时间给你解答。我需要先感谢一直帮助我的小伙伴，这个博客能产出300多集免费视频，其中有他们的鼎力支持，如果没有他们的支持和鼓励，我可能早都放弃了。 原来我博客只是录制免费视频，然后求30元的打赏。 每次打赏我都会觉得内疚，因为我并没有给你特殊的照顾，也没能从实质上帮助过你。 直到朋友给我介绍了知识星球，它可以专享加入，可以分享知识，可以解答问题，所以我如获珍宝，决定把打赏环节改为知识服务。我定价50元每年，为什么是50元每年？因为这是知识星球允许的最低收费了。' },
+		]
+	)
+	return(<>
+		<Head>
+			<title>Detail</title>
+		</Head>
+		<Header />
+		<Row className="comm-main" type="flex" justify="center">
+			<Col className="comm-left" xs={ 24 } sm={ 24 } md={ 16 } lg={ 18 } xl={ 14 }  >
+			<div>
+              <div className="bread-div">
+                <Breadcrumb>
+                  <Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
+                  <Breadcrumb.Item>视频列表</Breadcrumb.Item>
+                  <Breadcrumb.Item>xxxx</Breadcrumb.Item>
+                </Breadcrumb>
+              </div>
+
+             <div>
+                <div className="detailed-title">
+                React-Hooks学习笔记
+                </div>
+
+                <div className="list-icon center">
+                  <span><Icon type="calendar" /> 2019-06-28</span>
+                  <span><Icon type="folder" /> 视频教程</span>
+                  <span><Icon type="fire" /> 5498人</span>
+                </div>
+
+                <div className="detailed-content" >
+                  详细内容，下节课编写
+                </div>
+
+             </div>
+
+            </div>
+			</Col>
+
+			<Col className="comm-box" xs={ 0 } sm={ 0 } md={ 7 } lg={ 5 } xl={ 4 }>
+				<Author/>
+      </Col>
+		</Row>
+		<Footer/>
+	</>)
+}
+export default Detail
+```
+
+初步写的都是布局，下一步来解析Marckdown
+
+### p08:博客详情页面制作2——解析Markdown语法
+
+对Markdown文件的解析是前端必须要作的一件事。这里使用react-markdown.
+
+#### 一、认识react-markdown组件
+
+react-markdown是react专用的markdown解析组件，它支持代码高亮，表格，而且解析的非常好。
+github网址：https://github.com/rexxars/react-markdown
+
+#### 二、react-markdown的安装和引入
+
+可以直接使用yarn add 来进行安装，代码如下:
+```
+yarn add react-markdown
+```
+安装好后，使用import进行引入，代码如下:
+```
+import ReactMarkdown from 'react-markdown'
+```
+
+#### 三、准备md相关数据
+
+因为目前还没有后端程序，所以需要伪造一个md数据，让web页面可以渲染。
+
+这里声明一个markdown变量,当然内容全部是胡乱写的，为的就是可以顺利渲染出来。
+
+```
+
+let markdown='# P01:课程介绍和环境搭建\n' +
+  '[ **M** ] arkdown + E [ **ditor** ] = **Mditor**  \n' +
+  '> Mditor 是一个简洁、易于集成、方便扩展、期望舒服的编写 markdown 的编辑器，仅此而已... \n\n' +
+   '**这是加粗的文字**\n\n' +
+  '*这是倾斜的文字*`\n\n' +
+  '***这是斜体加粗的文字***\n\n' +
+  '~~这是加删除线的文字~~ \n\n'+
+  '\`console.log(111)\` \n\n'+
+  '# p02:来个Hello World 初始Vue3.0\n' +
+  '> aaaaaaaaa\n' +
+  '>> bbbbbbbbb\n' +
+  '>>> cccccccccc\n'+
+  '***\n\n\n' +
+  '# p03:Vue3.0基础知识讲解\n' +
+  '> aaaaaaaaa\n' +
+  '>> bbbbbbbbb\n' +
+  '>>> cccccccccc\n\n'+
+  '# p04:Vue3.0基础知识讲解\n' +
+  '> aaaaaaaaa\n' +
+  '>> bbbbbbbbb\n' +
+  '>>> cccccccccc\n\n'+
+  '#5 p05:Vue3.0基础知识讲解\n' +
+  '> aaaaaaaaa\n' +
+  '>> bbbbbbbbb\n' +
+  '>>> cccccccccc\n\n'+
+  '# p06:Vue3.0基础知识讲解\n' +
+  '> aaaaaaaaa\n' +
+  '>> bbbbbbbbb\n' +
+  '>>> cccccccccc\n\n'+
+  '# p07:Vue3.0基础知识讲解\n' +
+  '> aaaaaaaaa\n' +
+  '>> bbbbbbbbb\n' +
+  '>>> cccccccccc\n\n'+
+  '``` var a=11; ```'
+  ```
+
+  #### 四、使用react-marckdown渲染markdown
