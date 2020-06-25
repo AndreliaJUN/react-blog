@@ -828,3 +828,510 @@ let markdown='# P01:课程介绍和环境搭建\n' +
   ```
 
   #### 四、使用react-marckdown渲染markdown
+
+  现在组件和markdown文件都准备好了，可以进行渲染了。代码如下:
+
+  ```js
+  <div className="detailed-content" >
+    <ReactMarkdown 
+      source={markdown} 
+      escapeHtml={false}  
+    />
+</div>
+```
+
+现在可以到浏览器中预览一下了，如果一切正常，应该可以正常接卸markdown语法了。
+
+### p09:博客详细页面制作3-markdown导航制作
+
+博客文章都是长文章，所以需要一个类似书籍目录的东西，对文章进行导航。这个导航方便阅读，大大提升了博客的体验度。**React有着极好的技术生态**，基本能想到的技术需求都可以找到对应的轮子，所以依然适应第三方组件markdown-navbar.
+
+#### 一、认识markdown-navbar组件
+
+markdown-navbar组件是一款第三方提供的组件，因为这个是比较小众的需求，所以使用的人并不多。目前只有18star,这个是国人开发的，我用起来还不错，希望作者可以一直维护下去（目前开来是不进行维护了，但是用起来还是挺好用）。
+
+markdown-navbar的基本属性：
+
+className： 可以为导航定义一个class名称，从而进行style样式的定义。
+source：要解析的内容，也就是你的Markdown内容。
+headingTopOffset:描点距离页面顶部的位置，默认值是0.
+ordered: 显示数字编码，默认是显示的，也就是true，设置为false就不显示了。
+
+#### 二、Markdown-navbar的安装和使用
+
+用npm install进行安装，命令如下：
+```
+npm install --save markdown-navbar
+```
+用yarn add进行安装，命令如下：
+```
+yarn add markdown-navbar
+```
+
+安装完成后，直接在要使用的页面用import进行引入,需要注意的是还需要引入css。
+```js
+import MarkNav from 'markdown-navbar';
+import 'markdown-navbar/dist/navbar.css';
+```
+
+这样就引入成功了，现在就可以制作导航了，代码如下：
+```js
+<div className="detailed-nav comm-box">
+  <div className="nav-title">文章目录</div>
+  <MarkNav
+    className="article-menu"
+    source={markdown}
+    ordered={false}
+  />
+</div>
+``` 
+有一个需求，就是这个导航要一直在页面的右侧。我们经常叫这个需求为固钉。Ant Desgin中提供了Affix.
+先用import引入Affix组件。
+```js
+import {Row, Col ,Affix, Icon ,Breadcrumb  } from 'antd'
+```
+引入后在需要固钉的外层加上Affix组件就可以了。
+```js
+<Affix offsetTop={5}>
+  <div className="detailed-nav comm-box">
+    <div className="nav-title">文章目录</div>
+    <MarkNav
+      className="article-menu"
+      source={markdown}
+
+      ordered={false}
+    />
+  </div>
+</Affix>
+```
+
+### p10:中台搭建1-安装egg.js开发环境
+
+博客系统的服务端（或者叫做中台），采用Koa的上层框架egg.js，所谓上层框架就是在Koa的基础上，封装的框架。他主要针对于企业级开发，所以性能和稳定性上都非常不错，而且在国内有很高的声望，由阿里技术团队支持。
+
+#### 一、认识egg.js框架
+
+egg.js是由阿里开源的面向企业级开发的Node.js服务端框架，目的就是帮助团队和开发人员降低开发和维护成本。需要说的是他的底层是Koa2来搭建的。
+Koa2虽然已经很好了，但是它并没有任何约定和规范，这样在团队开发中，会出现混乱的现象。
+
+#### 二、搭建开发环境
+
+先进入到项目的根文件夹中，然后在根文件夹下，建立一个service的文件夹，这就是中台的文件夹了。
+
+全局安装egg.js的脚手架工具egg-init：
+
+```
+npm i egg-init -g
+```
+因为npm的源还是比较慢的，所以需要多等一些时间。安装完成后，用cd命令进入service文件夹。 用脚手架自动生成项目的基本结构，在终端中直接输入下面的命令。
+```
+egg-init --type=simple
+```
+如果不成功，需要多试几次，这多是网络不顺畅造成的，所以没有什么更好的办法来解决。等待顺利完成后，可以打开文件夹，看一下是否自动生成了很多文件和文件夹。但是现在还没有安装相关的依赖包，所以要使用命令安装egg项目所需要的所有依赖包。
+```
+npm install
+```
+安装完成后，就可以启动服务查看一下结果了。
+```
+npm run dev
+```
+然后在浏览器中打开网址:http://127.0.0.1:7001/
+
+如果在页面中显示hi.egg说明环境搭建完成。
+
+### p11:中台搭建2-egg.js目录结构和约定规范
+
+已经搭建好了egg.js开发环境，简单讲解一下egg.js的目录结构和约定规范。只有明白了这些，才能更好的进行开发。
+
+#### 一、egg.js目录结构介绍
+
+只介绍比较重要的文件：
+
+- app文件夹:项目开发文件，程序员主要操作的文件，项目的大部分代码都会写在这里。
+- config文件夹：这个是整个项目的配置目录，项目和服务端的配置都在这里边进行设置。
+- logs文件夹：日志文件夹，正常情况下不用修改和查看里边内容。
+- node_modules:项目所需要的模块文件，这个前端应该都非常了解，不多作介绍。
+- run文件夹：运行项目时，生成的配置文件，基本不修改里边的文件。
+- test文件夹：测试使用的配合文件，这个在测试时会使用。
+- .autod.conf.js: egg.js自己生成的配置文件，不需要进行修改。
+- eslinttrc和eslintignore：代码格式化的配置文件。
+- gitgnore：git设置忽略管理的配置文件。
+- package.json： 包管理和命令配置文件，这个文件经常进行配置。
+
+比较重要的是app文件夹、config文件夹和package.json文件。
+
+#### 二、Egg.js目录约定规范
+
+Koa2框架虽然小巧好用，但是在团队开发中使用，是缺少规范的，所以不擅长企业级开发。Egg.js框架就是在Koa2的基础上规范了这些约定，所以也带来了一些文件目录的限制。
+
+在app目录下，egg要求我们必须要有下面的文件：
+
+- controller文件夹：控制器，渲染和简单的业务逻辑都会写道这个文件里。配置路由时也会用到（路由配置需要的文件都要写在控制器里）。
+- public文件夹：公用文件夹，把一些公用资源都放在这个文件夹下。
+- router.js: 项目的路由配置文件，当用户访问服务的时候，在没有中间件的情况下，会先访问router.js文件。
+- service文件夹：这个是当我们的业务逻辑比较复杂或和数据库打交道时，会把业务逻辑放到这个文件中。
+- view文件夹：模板文件夹，相当于表现层的专属文件夹，这个项目，我们使用接口的形式，所以不需要建立view文件夹。
+- extend文件：当我们需要写一些模板中使用的扩展方法时，我们会放到这个文件夹里。
+- middleware：中间件文件夹，用来写中间件的，比如最常用的路由首位。
+
+### p12:中台搭建3-RESTful API设计简介和路由配置
+
+所有数据的获得和业务逻辑的操作都是通过中台实现的，也就是说中台只提供接口，这里的设计我们采用RESTful的规则，让egg为前端提供Api接口，实现中台主要的功能。
+
+#### 一、RESTful简介和约束方式
+
+RESTful是目前最流行的网络应用程序设计风格和开发方式，大量使用在移动端App上和前后端分离的接口设计。这种形式更直观并且接口也有了一定的约束性。
+
+约束的请求方式和对应的操作。
+
+- GET(SELECT) ： 从服务端取出资源，可以同时取出一项或者多项。
+- POST(CREATE) ：在服务器新建一个资源。
+- PUT(UPDATE) ：在服务器更新资源（客户端提供改变后的完整资源）。
+- DELETE(DELETE) ：从服务器删除资源。
+
+还有一些不常用的请求方式，不一一介绍了。
+
+#### 二、在egg.js中Api接口的路由配置
+
+首先打开service根目录下的controller文件夹
+在这个文件夹中新建两个文件夹
+admin（管理端使用的所有API接口）
+default（客户端使用的所有API接口）文件夹
+目前只有客户端（前台）的页面
+所以先在default目录下建立一个home.js文件，用于**前台首页所需要的api接口**
+代码：
+/service/app/controller/default/home.js
+```js
+'use strict';
+
+const Controller = require('egg').Controller
+
+class HomeController extends Controller{
+
+    async index(){
+        this.ctx.body="api接口"
+    }
+}
+
+module.exports = HomeController
+```
+接口写好以后，需要配置一下路由。
+**为了把路由也分成前后端分离的**，所以在app文件夹下新建一个router文件夹。
+在文件夹下新建两个文件default.js和admin.js
+default.js文件
+```js
+
+module.exports = app =>{
+    const {router,controller} = app
+    router.get('/default/index',controller.default.home.index)
+}
+```
+router.js文件
+```js
+'use strict';
+
+/**
+ * @param {Egg.Application} app - egg application
+ */
+module.exports = app => {
+
+  require('./router/default')(app)
+};
+```
+
+编写好以后，使用yarn dev命令进行开启服务器，然后到浏览器中输入地址http://127.0.0.1:7001/default/index,如果能出现api接口字样，说明已经完成了基本的路由设置。
+
+接下来学习egg.js如何连接数据库和实现相关的操作。
+
+### p13：中台搭建4-Egg.js中连接mysql数据库
+
+#### 一、egg-mysql模块安装
+
+如果要在egg.js中使用mysql数据库，那需要先进行安装egg-mysql模块，这个模块可以使用npm或者yarn来进行安装。
+npm安装命令如下:`npm i egg-mysql --save`
+
+yarn安装命令如下:`yarn add egg-mysql`
+
+#### 二、进行插件配置
+
+在安装完成以后，还不能正常使用，egg.js要求我们**对于外部模块在plugin.js中进行配置**。配置方法如下：
+文件/server/config/plugin.js
+```js
+'use strict';
+
+//配置插件
+exports.mysql = {
+  enable: true,
+  package: 'egg-mysql'
+}
+```
+这个配置完，也就说明egg.js可以支持mysql数据库的使用和连接了。
+
+以后还会多次配置这个文件，所以这里要对这个config.js有所印象，他的左右就是配置egg.js项目的。
+
+#### 三、数据库连接配置
+
+先确认已经有一台安装mysql的服务器或者是主机
+打开/config/config.default.js文件，作下面的配置（这段配置可以在https://www.npmjs.com/ 网址中找到这个配置）
+
+```js
+  config.mysql = {
+    // database configuration
+    client: {
+      // host
+      host: 'localhost',
+      // port
+      port: '3306',
+      // username
+      user: 'root',
+      // password
+      password: '12345678',
+      // database
+      database: 'react_blog',    
+    },
+    // load into app, default is open
+    app: true,
+    // load into agent, default is close
+    agent: false,
+  };
+```
+
+这个配置完成后，就可以连接到数据库了。
+
+#### 四、创建数据库
+
+数据库写好了需要验证一下，数据库是否已经连接上了。
+
+#### 五、验证数据库是否连接（使用get进行表的查询）
+
+打开/app/controller/defalut/home.js文件，改写index方法。
+```js
+'use strict';
+
+const Controller = require('egg').Controller
+
+class HomeController extends Controller{
+
+    async index(){
+        //获取用户表的数据
+
+        let result = await this.app.mysql.get("article",{})
+        console.log(result)
+        this.ctx.body=result
+    }
+
+
+}
+
+module.exports = HomeController
+```
+改写后，在浏览器中输入http://127.0.0.1:7001/default/index.如果能在控制台打印出结果和页面中显示结果，说明数据库已经连接成功了。
+
+### p14:中台搭建5-数据库设计和首页接口制作
+
+现在已经可以连接数据库了，现在就要好好设计一下数据库结构，把文章的表和类别的表建立好，然后我们复制一些数据进去，形成一个列表，供首页调用。
+
+#### 一、数据库中的表建立
+
+建立两张表type和article表，表结构如下:
+
+type表（文章类型表）
+
+id : 类型编号 int类型
+typeName: 文章类型名称 varchar类型
+orderNum: 类型排序编号 int类型
+建立好表之后，我们再写入一条数据，编号为1，名称是视频教程，排列需要为1
+
+article表（文章内容表）
+
+id : 文章编号 int类型
+type_id : 文章类型编号 int类型
+title : 文章标题，varchar类型
+article_cointent : 文章主体内容，text类型
+introduce： 文章简介，text类型
+addTime : 文章发布时间，int(11)类型
+view_count ：浏览次数， int类型
+建立好之后，可以自己写一些对应的文章进去
+
+#### 二、前端首页文章列表接口
+
+现在文章相关的数据表已经建立完成了，也简单的写入了一些数据，那现在就可以利用RESTful的规范，建立前端首页所需要的接口了。
+
+在/app/contoller/default/home.js文件夹中，写一个getArticleList的方法，代码如下：
+```js
+async getArticleList(){
+
+   let sql = 'SELECT article.id as id,'+
+             'article.title as title,'+
+             'article.introduce as introduce,'+
+             'article.addTime as addTime,'+
+             'article.view_count as view_count ,'+
+             '.type.typeName as typeName '+
+             'FROM article LEFT JOIN type ON article.type_id = type.Id'
+
+    const results = await this.app.mysql.query(sql)
+
+    this.ctx.body={
+        data:results
+    }
+}
+```
+
+写完之后还需要配置一下路由（router），打开/app/router/default.js,新建立一个get形式的路由配置，代码如下：
+
+```js
+module.exports = app =>{
+    const {router,controller} = app
+    router.get('/default/index',controller.default.home.index)
+    router.get('/default/getArticleList',controller.default.home.getArticleList)
+}
+```
+
+这个配置完成后，可以现在浏览器中预览一下结果，看看是否可以正确输出结果。访问地址：http://127.0.0.1:7001/default/getArticleList。如果能出现结果，说明已经完成了数据和接口的开发。
+
+### p15:前中台结合1-前台读取首页文章列表接口
+
+现在数据库、表和接口都已经完成了，
+可以试着从数据接口获得数据，然后现在在页面上了。
+实现这个需求，将使用Axios模块来实现。
+
+#### 一、安装Axios模块
+
+先进入前台的文件夹
+然后安装
+
+```
+yarn add axios
+```
+
+#### 二、新建getInitialProps方法并获取数据
+
+当Axios安装完成后，就可以从接口获取数据了。打开/blog/pages/index.js文件，在文件下方编写getInitialProps。
+```js
+Home.getInitialProps = async ()=>{
+  const promise = new Promise((resolve)=>{
+    axios('http://127.0.0.1:7001/default/getArticleList').then(
+      (res)=>{
+        //console.log('远程获取数据结果:',res.data.data)
+        resolve(res.data)
+      }
+    )
+  })
+
+  return await promise
+}
+```
+使用了经典的async/await的异步方法。我们可以在得到数据后在控制台打印一下，查看一下结果。
+
+#### 三、把数据放入到界面中
+
+当我们在getInitialProps方法里获得数据后，是可以直接传递到正式方法里，然后进行使用:
+```js
+const Home = (list) =>{
+
+  console.log(list)
+  //---------主要代码-------------start
+  const [ mylist , setMylist ] = useState( list.data);
+  //---------主要代码-------------end
+  return (
+    <>
+      <Head>
+        <title>Home</title>
+      </Head>
+      <Header />
+      <Row className="comm-main" type="flex" justify="center">
+        <Col className="comm-left" xs={24} sm={24} md={16} lg={18} xl={14}  >
+            <div>
+
+              <List
+                header={<div>最新日志</div>}
+                itemLayout="vertical"
+                dataSource={mylist}
+                renderItem={item => (
+                  <List.Item>
+
+                    <div className="list-title">{item.title}</div>
+                    <div className="list-icon">
+                      <span><Icon type="calendar" /> {item.addTime}</span>
+                      <span><Icon type="folder" /> {item.typeName}</span>
+                      <span><Icon type="fire" /> {item.view_count}人</span>
+                    </div>
+                    <div className="list-context">{item.introduce}</div>  
+                  </List.Item>
+                )}
+              />  
+
+            </div>
+        </Col>
+
+        <Col className="comm-right" xs={0} sm={0} md={7} lg={5} xl={4}>
+          <Author />
+          <Advert />
+        </Col>
+      </Row>
+      <Footer/>
+
+   </>
+  )
+
+} 
+```
+做完这步，内容就应该正确的显示在页面上了，但是还是有点小问题，比如日期格式还是不正确。
+
+#### 四、修改时间戳为日期格式
+
+其实这个有很多方法，有前端实现的方法，也有后端实现的方法，但是我觉的使用SQL语句来实现是最简单的一种方法。
+打开/service/app/controller/home.js文件，找到拼凑SQL语句那部分代码，把代码修改成如下样式即可实现转换。
+```js
+let sql = 'SELECT article.id as id,'+
+                 'article.title as title,'+
+                 'article.introduce as introduce,'+
+                 //主要代码----------start
+                 "FROM_UNIXTIME(article.addTime,'%Y-%m-%d %H:%i:%s' ) as addTime,"+
+                 //主要代码----------end
+                 'article.view_count as view_count ,'+
+                 '.type.typeName as typeName '+
+				 'FROM article LEFT JOIN type ON article.type_id = type.Id'
+```
+
+### p16：前中台结合2-文章详细页面接口制作展示
+
+首页的接口和展示已经差不多了，现在可以制作详细页的接口和内容。
+通过一个ID查找出详细的信息。
+
+#### 一、编写中台详细页面接口
+
+先打开/service/app/controller/default/home.js文件，编写接口，代码如下。需要注意的是整个接口是需要接收文章ID，然后根据文章ID查出内容的。
+
+home.js文件
+```js
+  async getArticleById(){
+        //先配置路由的动态传值，然后再接收值
+        let id = this.ctx.params.id
+
+        let sql = 'SELECT article.id as id,'+
+        'article.title as title,'+
+        'article.introduce as introduce,'+
+        'article.article_content as article_content,'+
+        "FROM_UNIXTIME(article.addTime,'%Y-%m-%d %H:%i:%s' ) as addTime,"+
+        'article.view_count as view_count ,'+
+        'type.typeName as typeName ,'+
+        'type.id as typeId '+
+        'FROM article LEFT JOIN type ON article.type_id = type.Id '+
+        'WHERE article.id='+id
+
+
+
+        const result = await this.app.mysql.query(sql)
+
+
+        this.ctx.body={data:result}
+
+	}
+	```
+
+#### 二、编写前台链接导航
+
+有了接口，先不着急编写详细页面，先把首页到详细页的链接做好。这个直接使用Next.js中的<Link>标签就可以了。找到首页中循环时文章的标题，在外边包括<Link>标签就可以了。
+
+/blog/pages/index.js
